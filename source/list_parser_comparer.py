@@ -1,5 +1,7 @@
 import re
+import os
 from pathlib import Path
+
 
 class ParserListaCotasIades:
 
@@ -39,7 +41,7 @@ class ParserListaCotasIades:
         return nomes
 
     def extrair_nomes_especificos(self, caminho_arquivo_cre_plano: Path) -> list[str]:
-        """Extrai nomes da lista total de nomes com final específico - ATIVIDADES ..."""
+        """Extrai nomes da lista total de nomes com final específico - ATIVIDADES - DIURNO CRE PLANO PILOTO/ CRUZEIRO ..."""
         nomes_especificos = []
 
         with open(caminho_arquivo_cre_plano, 'r', encoding='utf-8') as arquivo:
@@ -62,37 +64,44 @@ class ParserListaCotasIades:
 
         return nomes_comuns
 
-    def salvar_nomes_em_txt(self, dados: list[str], caminho_arquivo_saida: Path) -> None:
-        """Salva uma lista de nomes em .txt."""
-        with open(caminho_arquivo_saida, 'w', encoding='utf-8') as arquivo_saida:
-            for nome in dados:
-                arquivo_saida.write(nome + '\n')
+    def salvar_nomes_em_txt(self, dados, caminho_arquivo_saida: Path):
+            """Salva uma lista de nomes em .txt """
+            with open(caminho_arquivo_saida, 'w', encoding='utf-8') as arquivo_saida:
+                for nome in dados:
+                    arquivo_saida.write(nome + '\n')
 
     def main(self) -> None:
         """Execução."""
-        pasta_data = Path('data')
+        diretorio_atual = os.getcwd()
+        pasta_source = Path(diretorio_atual) / 'source'
+        pasta_data = Path(diretorio_atual) / 'data'
+        pasta_output = Path(diretorio_atual) / 'output'
 
         caminho_arquivo_nome_cotas = pasta_data / 'lista01.txt'
         caminho_arquivo_todos = pasta_data / 'lista02.txt'
         caminho_arquivo_cre_plano = pasta_data / 'lista03.txt'
 
-        nomes = self.extrair_nomes_do_arquivo(caminho_arquivo_todos)
+        #nomes = self.extrair_nomes_do_arquivo(caminho_arquivo_todos)
         nomes_cotas = self.parser_nome_cotas(caminho_arquivo_nome_cotas)
         nomes_especificos = self.extrair_nomes_especificos(caminho_arquivo_cre_plano)
         nomes_comuns = self.comparar_listas(nomes_especificos, nomes_cotas)
 
         # Salva os nomes comuns em um novo arquivo
         self.salvar_nomes_em_txt(
-            nomes_comuns, pasta_data / 'COMPARADOR_nomes_comuns_arquivo_saida.txt')
+            nomes_comuns, pasta_output / 'nomes_comuns_arquivo_saida.txt')
 
-        # Salva os nomes específicos em um novo arquivo
-        self.salvar_nomes_em_txt(
-            nomes_especificos, pasta_data / 'nomes_especificos_arquivo_saida.txt')
+        # salvar_nomes_em_txt(nomes, pasta_output / 'nomes_arquivo_saida.txt')
+        self.salvar_nomes_em_txt(nomes_especificos,
+                            pasta_output / 'nomes_especificos_arquivo_saida.txt')
 
-        print(f'Lista Nomes: {len(nomes)}')
-        print(f'Lista Nomes Cotas: {len(nomes_cotas)}')
-        print(f'Lista Nomes no Plano Piloto: {len(nomes_especificos)}')
-        print(f'Nomes comuns nas duas listas (COTAS PLANO PILOTO): {len(nomes_comuns)}')
+        # print('Lista Nomes')
+        # print(len(nomes))
+        print('Lista Nomes Cotas')
+        print(len(nomes_cotas))
+        print('Lista Nomes no Plano Piloto')
+        print(len(nomes_especificos))
+        print('Nomes comuns nas duas listas (COTAS PLANO PILOTO):')
+        print(len(nomes_comuns))
 
 if __name__ == "__main__":
     parser_lista_cotas_iades = ParserListaCotasIades()

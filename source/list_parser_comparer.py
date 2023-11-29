@@ -70,9 +70,11 @@ class ParserListaCotasIades:
 
     def main(self) -> None:
         """Execução."""
-        caminho_arquivo_nome_cotas = Path('lista01.txt')
-        caminho_arquivo_todos = Path('lista02.txt')
-        caminho_arquivo_cre_plano = Path('lista03.txt')
+        pasta_data = Path('data')
+
+        caminho_arquivo_nome_cotas = pasta_data / 'lista01.txt'
+        caminho_arquivo_todos = pasta_data / 'lista02.txt'
+        caminho_arquivo_cre_plano = pasta_data / 'lista03.txt'
 
         nomes = self.extrair_nomes_do_arquivo(caminho_arquivo_todos)
         nomes_cotas = self.parser_nome_cotas(caminho_arquivo_nome_cotas)
@@ -81,11 +83,11 @@ class ParserListaCotasIades:
 
         # Salva os nomes comuns em um novo arquivo
         self.salvar_nomes_em_txt(
-            nomes_comuns, Path('COMPARADOR_nomes_comuns_arquivo_saida.txt'))
+            nomes_comuns, pasta_data / 'COMPARADOR_nomes_comuns_arquivo_saida.txt')
 
         # Salva os nomes específicos em um novo arquivo
         self.salvar_nomes_em_txt(
-            nomes_especificos, Path('nomes_especificos_arquivo_saida.txt'))
+            nomes_especificos, pasta_data / 'nomes_especificos_arquivo_saida.txt')
 
         print(f'Lista Nomes: {len(nomes)}')
         print(f'Lista Nomes Cotas: {len(nomes_cotas)}')
